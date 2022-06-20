@@ -84,13 +84,13 @@ public class URLService {
     private HashMap<String, Integer> createNotLematizedWordsMap(ArrayList<String> texts) {
         HashMap<String, Integer> notLematizedMap = new HashMap<>();
         for(String text : texts) {
-            StringTokenizer stringTokenizer = new StringTokenizer(text, " ,.;:?!<>(){}/|\\#$&^–=+_~`'\"\r\n\t\f");
+            StringTokenizer stringTokenizer = new StringTokenizer(text, " ,.•;:?!<>(){}/|\\#$&^–=+_~`«»'\"\r\n\t\f");
             while (stringTokenizer.hasMoreTokens()) {
                 String token = stringTokenizer.nextToken();
                 if(notLematizedMap.containsKey(token)) {
-                    notLematizedMap.put(token, notLematizedMap.get(token)+1);
+                    notLematizedMap.put(token.toLowerCase(), notLematizedMap.get(token)+1);
                 } else {
-                    notLematizedMap.put(token, 1);
+                    notLematizedMap.put(token.toLowerCase(), 1);
                 }
             }
         }
@@ -131,7 +131,6 @@ public class URLService {
             }
             if(word.getCodeParent() == 0) {
                 wordDto = WordToWordDtoConverter.convert(word);
-                word = null;
             } else {
                 while (word.getCodeParent() != 0) {
                     //System.out.println("В процессе поиска родителя с кодом " + word.getCodeParent());
@@ -143,7 +142,6 @@ public class URLService {
                     }
                 }
                 wordDto = WordToWordDtoConverter.convert(word);
-                word = null;
             }
 
             if(lematizedWords.contains(wordDto)) {
