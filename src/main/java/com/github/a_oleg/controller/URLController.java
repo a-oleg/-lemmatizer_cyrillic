@@ -1,5 +1,6 @@
 package com.github.a_oleg.controller;
 
+import com.github.a_oleg.dto.WordDto;
 import com.github.a_oleg.service.URLService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -32,7 +33,7 @@ public class URLController {
             for (String arrayElement : arrayURL) {
                 urlsForCountLematizedWords.add(arrayElement);
             }
-            HashMap<String, ArrayList> LematizedCyrillicAndNonLematizedNonCyrillicWords
+            ArrayList<WordDto> LematizedCyrillicAndNonLematizedNonCyrillicWords
                     = urlService.countLematizedWordsByUrls(urlsForCountLematizedWords);
         }
     }

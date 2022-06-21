@@ -24,7 +24,7 @@ public class URLService {
 
     //Потом проставить ему возвращаемое значение для возврата файла/данных контроллеру
     /**Метод, возвращающий количество повторений лематизированных слов*/
-    public HashMap<String, ArrayList> countLematizedWordsByUrls(ArrayList<String> urls) {
+    public ArrayList<WordDto> countLematizedWordsByUrls(ArrayList<String> urls) {
         System.out.println("Парсинг сайтов");
         ArrayList<String> textsByUrls = parseURL(urls);
         HashMap<String, Integer> nonLematizedCyrillicAndNonCyrillicWords = createNotLematizedWordsMap(textsByUrls);
@@ -40,21 +40,21 @@ public class URLService {
             }
         }
 
-        ArrayList<WordDto> lematizedCyrillicWords = new ArrayList<>();
+        ArrayList<WordDto> LematizedCyrillicAndNonLematizedNonCyrillicWords = new ArrayList<>();
+
+        ArrayList<WordDto> lematizedCyrillicWords;
         if(nonLematizedCyrillicWords.size() != 0) {
             System.out.println("Лематизация кирилического списка слов, количество нелематизированных слов: "  + nonLematizedCyrillicWords.size());
             lematizedCyrillicWords = checkingLematizedForm(nonLematizedCyrillicWords);
+            LematizedCyrillicAndNonLematizedNonCyrillicWords.addAll(lematizedCyrillicWords);
         }
 
-        ArrayList<WordDto> nonlematizedNonCyrillicWords = new ArrayList<>();
+        ArrayList<WordDto> nonlematizedNonCyrillicWords;
         if(nonLematizedNonCyrillicWords.size() != 0) {
             System.out.println("Создание не кирилического списка слов, количество слов: "  + nonLematizedNonCyrillicWords.size());
             nonlematizedNonCyrillicWords = creatingListOfNonCyrillicWords(nonLematizedNonCyrillicWords);
+            LematizedCyrillicAndNonLematizedNonCyrillicWords.addAll(nonlematizedNonCyrillicWords);
         }
-
-        HashMap<String, ArrayList> LematizedCyrillicAndNonLematizedNonCyrillicWords = new HashMap<>();
-        LematizedCyrillicAndNonLematizedNonCyrillicWords.put("Cyrillic", lematizedCyrillicWords);
-        LematizedCyrillicAndNonLematizedNonCyrillicWords.put("NonCyrillic", nonlematizedNonCyrillicWords);
         return LematizedCyrillicAndNonLematizedNonCyrillicWords;
     }
 
@@ -84,7 +84,7 @@ public class URLService {
     private HashMap<String, Integer> createNotLematizedWordsMap(ArrayList<String> texts) {
         HashMap<String, Integer> notLematizedMap = new HashMap<>();
         for(String text : texts) {
-            StringTokenizer stringTokenizer = new StringTokenizer(text, " ,.•;:?!<>(){}/|\\#$&^–=+_~`«»'\"\r\n\t\f");
+            StringTokenizer stringTokenizer = new StringTokenizer(text, " ,.•;:?!<>«»(){}/|\\#$&^–=+_~`'\"\r\n\t\f");
             while (stringTokenizer.hasMoreTokens()) {
                 String token = stringTokenizer.nextToken();
                 if(notLematizedMap.containsKey(token)) {
@@ -126,7 +126,7 @@ public class URLService {
             }
 
             if (wordSet.size() == 0) {
-                wordDto = new WordDto(0, entry.getKey(), 0, 0, entry.getValue());
+                wordDto = new WordDto(0, entry.getKey(), 0, 0, entry.getValue(), true);
                 lematizedWords.add(wordDto);
             }
             if(word.getCodeParent() == 0) {
@@ -160,7 +160,7 @@ public class URLService {
     private ArrayList<WordDto> creatingListOfNonCyrillicWords(HashMap<String, Integer> nonCyrillicWordsMap) {
         ArrayList<WordDto> nonCyrillicWords = new ArrayList<>();
         for(Map.Entry<String, Integer> entry: nonCyrillicWordsMap.entrySet()) {
-            nonCyrillicWords.add(new WordDto(0, entry.getKey(), 0, 0, entry.getValue()));
+            nonCyrillicWords.add(new WordDto(0, entry.getKey(), 0, 0, entry.getValue(), false));
         }
         return nonCyrillicWords;
     }

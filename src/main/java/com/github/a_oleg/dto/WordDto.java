@@ -6,16 +6,18 @@ public class WordDto {
     int code;
     int codeParent;
     int count;
+    boolean cyrillic;
 
-    public WordDto() {
-    }
-
-    public WordDto(int id, String word, int code, int codeParent, int count) {
+    public WordDto(int id, String word, int code, int codeParent, int count, boolean cyrillic) {
         this.id = id;
         this.word = word;
         this.code = code;
         this.codeParent = codeParent;
         this.count = count;
+        this.cyrillic = cyrillic;
+    }
+
+    public WordDto() {
     }
 
     public int getId() {
@@ -58,7 +60,15 @@ public class WordDto {
         this.count = count;
     }
 
+    public boolean isCyrillic() {
+        return cyrillic;
+    }
+
+    public void setCyrillic(boolean cyrillic) {
+        this.cyrillic = cyrillic;
+    }
+
     public String toString(){
-        return getWord() + " - " + getCount() + " повторений";
+        return getWord() + " - " + getCount() + " пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
     }
 }
