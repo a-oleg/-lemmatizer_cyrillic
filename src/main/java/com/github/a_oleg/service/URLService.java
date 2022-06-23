@@ -55,6 +55,7 @@ public class URLService {
             nonlematizedNonCyrillicWords = creatingListOfNonCyrillicWords(nonLematizedNonCyrillicWords);
             LematizedCyrillicAndNonLematizedNonCyrillicWords.addAll(nonlematizedNonCyrillicWords);
         }
+        System.out.println("Сформирован итоговый список объектов WordDto размером " + LematizedCyrillicAndNonLematizedNonCyrillicWords.size() + " элементов");
         return LematizedCyrillicAndNonLematizedNonCyrillicWords;
     }
 
