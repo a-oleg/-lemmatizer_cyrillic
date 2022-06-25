@@ -1,4 +1,4 @@
-package com.github.a_oleg.controller;
+package com.github.a_oleg.controllers;
 
 import com.github.a_oleg.dto.WordDto;
 import com.github.a_oleg.service.URLService;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 @Controller
 public class URLController {
@@ -24,9 +23,9 @@ public class URLController {
 
     @RequestMapping(value = "/downloadResult", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
-    public void parseURL(@RequestParam(name = "URL", required = true) String url, Model model) {
+    public ArrayList<WordDto> parseURL(@RequestParam(name = "URL", required = true) String url, Model model) {
         if (url == "") {
-            //Написать код, отправляющий на фронт сообщение, что никаких url не было указано
+            return null;
         } else {
             String[] arrayURL = url.split("\r\n");
             ArrayList<String> urlsForCountLematizedWords = new ArrayList<>();
@@ -35,6 +34,7 @@ public class URLController {
             }
             ArrayList<WordDto> LematizedCyrillicAndNonLematizedNonCyrillicWords
                     = urlService.countLematizedWordsByUrls(urlsForCountLematizedWords);
+            return LematizedCyrillicAndNonLematizedNonCyrillicWords;
         }
     }
 }

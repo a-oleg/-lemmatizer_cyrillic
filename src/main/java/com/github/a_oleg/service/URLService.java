@@ -129,6 +129,7 @@ public class URLService {
             if (wordSet.size() == 0) {
                 wordDto = new WordDto(0, entry.getKey(), 0, 0, entry.getValue(), true);
                 lematizedWords.add(wordDto);
+                continue;
             }
             if(word.getCodeParent() == 0) {
                 wordDto = WordToWordDtoConverter.convert(word);
