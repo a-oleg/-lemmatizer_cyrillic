@@ -22,7 +22,6 @@ public class URLService {
         this.wordRepository = wordRepository;
     }
 
-    //Потом проставить ему возвращаемое значение для возврата файла/данных контроллеру
     /**Метод, возвращающий количество повторений лематизированных слов*/
     public ArrayList<WordDto> countLematizedWordsByUrls(ArrayList<String> urls) {
         System.out.println("Парсинг сайтов");
