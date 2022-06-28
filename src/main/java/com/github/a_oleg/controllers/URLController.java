@@ -21,7 +21,7 @@ public class URLController {
         this.urlService = urlService;
     }
 
-    @RequestMapping(value = "/downloadResult", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @RequestMapping(value = "/downloadResult", produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
     public ArrayList<WordDto> parseURL(@RequestParam(name = "URL", required = true) String url, Model model) {
         if (url == "") {
