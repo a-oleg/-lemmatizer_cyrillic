@@ -12,6 +12,7 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Transactional
 @Service
@@ -84,7 +85,7 @@ public class URLService {
     private HashMap<String, Integer> createNotLematizedWordsMap(ArrayList<String> texts) {
         HashMap<String, Integer> notLematizedMap = new HashMap<>();
         for(String text : texts) {
-            StringTokenizer stringTokenizer = new StringTokenizer(text, " ,.•;:?!<>«»(){}/|\\#$&^–=+_~`'\"\r\n\t\f");
+            StringTokenizer stringTokenizer = new StringTokenizer(text, " ,.•;:?!<>«»(){}/|\\#$&^-–=+_~`'\"\r\n\t\f");
             while (stringTokenizer.hasMoreTokens()) {
                 String token = stringTokenizer.nextToken();
                 if(notLematizedMap.containsKey(token)) {
