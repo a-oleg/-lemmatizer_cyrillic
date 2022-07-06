@@ -82,7 +82,7 @@ public class URLService {
     }
 
     /**Метод, формирующий список "Слово-количество повторений" из текстов*/
-    private HashMap<String, Integer> createNotLematizedWordsMap(ArrayList<String> texts) {
+    public HashMap<String, Integer> createNotLematizedWordsMap(ArrayList<String> texts) {
         HashMap<String, Integer> notLematizedMap = new HashMap<>();
         for(String text : texts) {
             StringTokenizer stringTokenizer = new StringTokenizer(text, " ,.•;:?!<>«»(){}/|\\#$&^-–=+_~`'\"\r\n\t\f");
@@ -99,7 +99,10 @@ public class URLService {
     }
 
     /**Метод, определяющий принадлежит ли слово кирилице*/
-    private boolean checkCyrillic(String word){
+    public boolean checkCyrillic(String word){
+        if(word == null || word.isEmpty()) {
+            return false;
+        }
         boolean result = false;
         for (char a : word.toCharArray()) {
             if (Character.UnicodeBlock.of(a) == Character.UnicodeBlock.CYRILLIC) {
@@ -132,7 +135,7 @@ public class URLService {
                 continue;
             }
             if(word.getCodeParent() == 0) {
-                wordDto = WordToWordDtoConverter.convert(word);
+                wordDto = WordToWordDtoConverter.convert(word, entry.getValue(), true);
             } else {
                 while (word.getCodeParent() != 0) {
                     //System.out.println("В процессе поиска родителя с кодом " + word.getCodeParent());
@@ -143,7 +146,7 @@ public class URLService {
                         break;
                     }
                 }
-                wordDto = WordToWordDtoConverter.convert(word);
+                wordDto = WordToWordDtoConverter.convert(word, entry.getValue(), true);
             }
 
             if(lematizedWords.contains(wordDto)) {

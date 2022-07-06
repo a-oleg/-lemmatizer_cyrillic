@@ -6,13 +6,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class WordToWordDtoConverter {
-    public static WordDto convert(Word word) {
+    public static WordDto convert(Word word, int count, boolean cyrillic) {
         WordDto targetWord = new WordDto();
 
         targetWord.setId(word.getId());
         targetWord.setWord(word.getWord());
-        targetWord.setCodeParent(word.getCodeParent());
         targetWord.setCode(word.getCode());
+        targetWord.setCodeParent(word.getCodeParent());
+        targetWord.setCount(count);
+        targetWord.setCyrillic(cyrillic);
 
         return targetWord;
     }
