@@ -84,6 +84,7 @@ public class URLService {
     /**Метод, формирующий список "Слово-количество повторений" из текстов*/
     public HashMap<String, Integer> createNotLematizedWordsMap(ArrayList<String> texts) {
         HashMap<String, Integer> notLematizedMap = new HashMap<>();
+        if(texts == null) return notLematizedMap;
         for(String text : texts) {
             StringTokenizer stringTokenizer = new StringTokenizer(text, " ,.•;:?!<>«»(){}/|\\#$&^-–=+_~`'\"\r\n\t\f");
             while (stringTokenizer.hasMoreTokens()) {
@@ -114,7 +115,7 @@ public class URLService {
     }
 
     /**Метод, возвращающий массив кирилических лематизированных слов WordDto*/
-    private ArrayList<WordDto> checkingLematizedForm(HashMap<String, Integer> notLematizedWordsMap) {
+    public ArrayList<WordDto> checkingLematizedForm(HashMap<String, Integer> notLematizedWordsMap) {
         ArrayList<WordDto> lematizedWords = new ArrayList<>();
         Word word = null;
         WordDto wordDto;
@@ -137,7 +138,8 @@ public class URLService {
             if(word.getCodeParent() == 0) {
                 wordDto = WordToWordDtoConverter.convert(word, entry.getValue(), true);
             } else {
-                while (word.getCodeParent() != 0) {
+                int counterLevelsDeep = 0;
+                while (word.getCodeParent() != 0 && counterLevelsDeep < 5 ) {
                     //System.out.println("В процессе поиска родителя с кодом " + word.getCodeParent());
                     Set<Word> wordParentSet = wordRepository.findByCode(word.getCodeParent());
                     //System.out.println("Найдено " + wordParentSet.size() + " родителей");
@@ -145,6 +147,7 @@ public class URLService {
                         word = wordParent;
                         break;
                     }
+                    counterLevelsDeep++;
                 }
                 wordDto = WordToWordDtoConverter.convert(word, entry.getValue(), true);
             }
@@ -162,7 +165,7 @@ public class URLService {
     }
 
     /**Метод, возвращающий массив не кирилических слов WordDto*/
-    private ArrayList<WordDto> creatingListOfNonCyrillicWords(HashMap<String, Integer> nonCyrillicWordsMap) {
+    public ArrayList<WordDto> creatingListOfNonCyrillicWords(HashMap<String, Integer> nonCyrillicWordsMap) {
         ArrayList<WordDto> nonCyrillicWords = new ArrayList<>();
         for(Map.Entry<String, Integer> entry: nonCyrillicWordsMap.entrySet()) {
             nonCyrillicWords.add(new WordDto(0, entry.getKey(), 0, 0, entry.getValue(), false));
