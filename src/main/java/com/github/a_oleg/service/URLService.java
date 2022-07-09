@@ -60,14 +60,20 @@ public class URLService {
     }
 
     /**Метод, парсящий тексты сайтов*/
-    private ArrayList<String> parseURL(ArrayList<String> urls) {
+    public ArrayList<String> parseURL(ArrayList<String> urls) {
         ArrayList<String> urlsAndTexts = new ArrayList<>();
+        if(urls == null) {
+            return urlsAndTexts;
+        }
+
         Document htmlDocument = null;
 
         for(String url : urls) {
             String bodyTagText;
             try {
                 htmlDocument = Jsoup.connect(url).get();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -104,10 +110,10 @@ public class URLService {
         if(word == null || word.isEmpty()) {
             return false;
         }
-        boolean result = false;
+        boolean result = true;
         for (char a : word.toCharArray()) {
-            if (Character.UnicodeBlock.of(a) == Character.UnicodeBlock.CYRILLIC) {
-                result = !result;
+            if (Character.UnicodeBlock.of(a) != Character.UnicodeBlock.CYRILLIC) {
+                result = false;
                 break;
             }
         }

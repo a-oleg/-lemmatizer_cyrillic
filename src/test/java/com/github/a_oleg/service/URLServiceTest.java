@@ -1,6 +1,5 @@
 package com.github.a_oleg.service;
 
-import com.github.a_oleg.dto.WordDto;
 import com.github.a_oleg.entity.Word;
 import com.github.a_oleg.repository.WordRepository;
 import org.junit.jupiter.api.Assertions;
@@ -28,33 +27,47 @@ class URLServiceTest {
     URLService urlService;
 
     @Test
-    void whenCyrillic_thenReturnTrue() {
-        Assertions.assertTrue(urlService.checkCyrillic("абв"));
+    void whenParseValidUrls_thenReturnTrue() {
+        ArrayList<String> urls = new ArrayList<>();
+        urls.add("https://yandex.ru/");
+        urls.add("https://ya.ru/");
+        urls.add("https://mail.ru/");
+
+        Assertions.assertEquals(3, urlService.parseURL(urls).size());
     }
 
-    @Test
-    void whenNonCyrillic_thenReturnFalse() {
-        Assertions.assertFalse(urlService.checkCyrillic("abc"));
-    }
-
+//    Не знаю, как в коде решить проблему: для парсинга передаются корректные urls, просто без https
 //    @Test
-//    void whenCyrillicAndNonCyrillic_thenReturnFalse() {
-//        Assertions.assertFalse(urlService.checkCyrillic("абвabc"));
+//    void whenParseValidUrlsWithoutHTTPS_thenReturnTrue() {
+//        ArrayList<String> urls = new ArrayList<>();
+//        urls.add("yandex.ru");
+//        urls.add("ya.ru");
+//        urls.add("mail.ru");
+//
+//        Assertions.assertEquals(3, urlService.parseURL(urls).size());
+//    }
+
+
+//Не знаю, как в коде решить проблему: для парсинга передаются некорректные urls. Я просто сделал printStackTrace
+//    @Test
+//    void whenParseNotUrls_thenReturnException() {
+//        ArrayList<String> urls = new ArrayList<>();
+//        urls.add("123");
+//        urls.add("abc");
+//        urls.add("абв");
+//
+//        Assertions.assertEquals(3, urlService.parseURL(urls).size());
 //    }
 
     @Test
-    void whenNumber_thenReturnFalse() {
-        Assertions.assertFalse(urlService.checkCyrillic("1"));
+    void whenEmptyUrlArray_thenReturnArrayOfSizeZero() {
+        ArrayList<String> urls = new ArrayList<>();
+        Assertions.assertEquals(0, urlService.parseURL(urls).size());
     }
 
     @Test
-    void whenEmptyString_thenReturnFalse() {
-        Assertions.assertFalse(urlService.checkCyrillic(""));
-    }
-
-    @Test
-    void whenNull_thenReturnFalse() {
-        Assertions.assertFalse(urlService.checkCyrillic(null));
+    void whenParseNull_thenReturnArrayOfSizeZero() {
+        Assertions.assertEquals(0, urlService.parseURL(null).size());
     }
 
     @Test
@@ -76,10 +89,40 @@ class URLServiceTest {
     @Test
     void whenHashMapNonCyrillicWordsWithTwoElements_thenReturnArrayListWithTwoElements() {
         HashMap<String, Integer> nonCyrillicWordsMap = new HashMap<>();
-        nonCyrillicWordsMap.put("Олег", 1);
-        nonCyrillicWordsMap.put("Семён", 2);
+        nonCyrillicWordsMap.put("Марс", 1);
+        nonCyrillicWordsMap.put("Венера", 2);
 
         Assertions.assertEquals(2, urlService.creatingListOfNonCyrillicWords(nonCyrillicWordsMap).size());
+    }
+
+    @Test
+    void whenCyrillic_thenReturnTrue() {
+        Assertions.assertTrue(urlService.checkCyrillic("абв"));
+    }
+
+    @Test
+    void whenNonCyrillic_thenReturnFalse() {
+        Assertions.assertFalse(urlService.checkCyrillic("abc"));
+    }
+
+    @Test
+    void whenCyrillicAndNonCyrillic_thenReturnFalse() {
+        Assertions.assertFalse(urlService.checkCyrillic("абвabc"));
+    }
+
+    @Test
+    void whenNumber_thenReturnFalse() {
+        Assertions.assertFalse(urlService.checkCyrillic("1"));
+    }
+
+    @Test
+    void whenEmptyString_thenReturnFalse() {
+        Assertions.assertFalse(urlService.checkCyrillic(""));
+    }
+
+    @Test
+    void whenNull_thenReturnFalse() {
+        Assertions.assertFalse(urlService.checkCyrillic(null));
     }
 
     @Test
@@ -102,5 +145,4 @@ class URLServiceTest {
 
         Assertions.assertEquals(2, urlService.checkingLematizedForm(notLematizedWordsMap).size());
     }
-
 }
