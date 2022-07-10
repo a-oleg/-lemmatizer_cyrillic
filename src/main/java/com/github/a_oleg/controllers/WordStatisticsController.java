@@ -28,7 +28,7 @@ public class WordStatisticsController {
                 urlsForCountLematizedWords.add(arrayElement);
             }
             ArrayList<WordDto> lematizedCyrillicAndNonLematizedNonCyrillicWords
-                    = urlService.countLematizedWordsByUrls(urlsForCountLematizedWords);
+                    = urlService.getLematizedWordsByUrls(urlsForCountLematizedWords);
             return lematizedCyrillicAndNonLematizedNonCyrillicWords;
         }
     }

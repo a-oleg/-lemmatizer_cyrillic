@@ -4,6 +4,8 @@ import com.github.a_oleg.converter.WordToWordDtoConverter;
 import com.github.a_oleg.dto.WordDto;
 import com.github.a_oleg.entity.Word;
 import com.github.a_oleg.repository.WordRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,11 +14,11 @@ import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.Pattern;
 
 @Transactional
 @Service
 public class URLService {
+    Logger logger = LoggerFactory.getLogger(URLService.class);
     private final WordRepository wordRepository;
     @Autowired
     public URLService(WordRepository wordRepository) {
@@ -24,7 +26,7 @@ public class URLService {
     }
 
     /**Метод, возвращающий количество повторений лематизированных слов*/
-    public ArrayList<WordDto> countLematizedWordsByUrls(ArrayList<String> urls) {
+    public ArrayList<WordDto> getLematizedWordsByUrls(ArrayList<String> urls) {
         System.out.println("Парсинг сайтов");
         ArrayList<String> textsByUrls = parseURL(urls);
         HashMap<String, Integer> nonLematizedCyrillicAndNonCyrillicWords = createNotLematizedWordsMap(textsByUrls);
@@ -44,7 +46,8 @@ public class URLService {
 
         ArrayList<WordDto> lematizedCyrillicWords;
         if(nonLematizedCyrillicWords.size() != 0) {
-            System.out.println("Лематизация кирилического списка слов, количество нелематизированных слов: "  + nonLematizedCyrillicWords.size());
+            System.out.println("Лематизация кирилического списка слов, количество нелематизированных слов: "  +
+                    nonLematizedCyrillicWords.size());
             lematizedCyrillicWords = checkingLematizedForm(nonLematizedCyrillicWords);
             LematizedCyrillicAndNonLematizedNonCyrillicWords.addAll(lematizedCyrillicWords);
         }
@@ -60,7 +63,7 @@ public class URLService {
     }
 
     /**Метод, парсящий тексты сайтов*/
-    public ArrayList<String> parseURL(ArrayList<String> urls) {
+    private ArrayList<String> parseURL(ArrayList<String> urls) {
         ArrayList<String> urlsAndTexts = new ArrayList<>();
         if(urls == null) {
             return urlsAndTexts;
