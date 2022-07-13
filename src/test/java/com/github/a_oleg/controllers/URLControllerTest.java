@@ -27,13 +27,24 @@ public class URLControllerTest {
     void whenOneUrlParse_thenReturnListOfWords() {
         ArrayList<WordDto> text = new ArrayList<>();
         WordDto firstWordDto = new WordDto(1, "Первый", 1, 1, 1, true);
+        text.add(firstWordDto);
+
+        when(urlService.getLematizedWordsByUrls(any())).thenReturn(text);
+
+        Assertions.assertEquals(1, urlController.parseURL("https://google.com/").size());
+    }
+
+    @Test
+    void whenTwoUrlParse_thenReturnListOfWords() {
+        ArrayList<WordDto> text = new ArrayList<>();
+        WordDto firstWordDto = new WordDto(1, "Первый", 1, 1, 1, true);
         WordDto twoWordDto = new WordDto(2, "Two", 2, 2, 2, false);
         text.add(firstWordDto);
         text.add(twoWordDto);
 
         when(urlService.getLematizedWordsByUrls(any())).thenReturn(text);
 
-        Assertions.assertEquals(2, urlController.parseURL("https://yandex.ru/").size());
+        Assertions.assertEquals(2, urlController.parseURL("https://yandex.ru/,https://google.com/").size());
     }
 
 

@@ -63,7 +63,7 @@ public class URLService {
     }
 
     /**Метод, парсящий тексты сайтов*/
-    private ArrayList<String> parseURL(ArrayList<String> urls) {
+    public ArrayList<String> parseURL(ArrayList<String> urls) {
         ArrayList<String> urlsAndTexts = new ArrayList<>();
         if(urls == null) {
             return urlsAndTexts;
@@ -73,6 +73,10 @@ public class URLService {
 
         for(String url : urls) {
             String bodyTagText;
+
+            if(!url.contains("https://")) {
+                url = "https://" + url;
+            }
             try {
                 htmlDocument = Jsoup.connect(url).get();
             } catch (IllegalArgumentException e) {
