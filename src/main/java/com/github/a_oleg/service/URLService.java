@@ -63,7 +63,7 @@ public class URLService {
     }
 
     /**Метод, парсящий тексты сайтов*/
-    public ArrayList<String> parseURL(ArrayList<String> urls) {
+    private ArrayList<String> parseURL(ArrayList<String> urls) {
         ArrayList<String> urlsAndTexts = new ArrayList<>();
         if(urls == null) {
             return urlsAndTexts;

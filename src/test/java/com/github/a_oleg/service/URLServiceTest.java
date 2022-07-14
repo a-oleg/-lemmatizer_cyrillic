@@ -39,7 +39,7 @@ class URLServiceTest {
         method.setAccessible(true);
         ArrayList<String> strings = (ArrayList<String>)method.invoke(urlService, urls);
         Assertions.assertEquals(3, strings.size());
-        //Assertions.assertEquals(3, urlService.parseURL(urls).size());
+        Assertions.assertEquals(3, urlService.parseURL(urls).size());
     }
 
     @Test
