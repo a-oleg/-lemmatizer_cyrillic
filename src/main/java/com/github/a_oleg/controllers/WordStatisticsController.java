@@ -1,6 +1,7 @@
 package com.github.a_oleg.controllers;
 
 import com.github.a_oleg.dto.WordDto;
+import com.github.a_oleg.exceptions.ServerException;
 import com.github.a_oleg.service.URLService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -18,7 +19,7 @@ public class WordStatisticsController {
     }
 
     @GetMapping
-    public ArrayList<WordDto> getStatistics(@RequestParam(name = "URL", required = true) String url, Model model) {
+    public ArrayList<WordDto> getStatistics(@RequestParam(name = "URL", required = true) String url, Model model) throws ServerException {
         if (url == "") {
             return null;
         } else {

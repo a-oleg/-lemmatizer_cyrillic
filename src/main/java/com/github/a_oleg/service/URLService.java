@@ -3,6 +3,7 @@ package com.github.a_oleg.service;
 import com.github.a_oleg.converter.WordToWordDtoConverter;
 import com.github.a_oleg.dto.WordDto;
 import com.github.a_oleg.entity.Word;
+import com.github.a_oleg.exceptions.ServerException;
 import com.github.a_oleg.repository.WordRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.*;
 
 @Transactional
@@ -26,7 +28,7 @@ public class URLService {
     }
 
     /**Метод, возвращающий количество повторений лематизированных слов*/
-    public ArrayList<WordDto> getLematizedWordsByUrls(ArrayList<String> urls) {
+    public ArrayList<WordDto> getLematizedWordsByUrls(ArrayList<String> urls) throws ServerException {
         System.out.println("Парсинг сайтов");
         ArrayList<String> textsByUrls = parseURL(urls);
         HashMap<String, Integer> nonLematizedCyrillicAndNonCyrillicWords = createNotLematizedWordsMap(textsByUrls);
@@ -63,7 +65,7 @@ public class URLService {
     }
 
     /**Метод, парсящий тексты сайтов*/
-    private ArrayList<String> parseURL(ArrayList<String> urls) {
+    private ArrayList<String> parseURL(ArrayList<String> urls) throws ServerException {
         ArrayList<String> urlsAndTexts = new ArrayList<>();
         if(urls == null) {
             return urlsAndTexts;
@@ -79,6 +81,9 @@ public class URLService {
             }
             try {
                 htmlDocument = Jsoup.connect(url).get();
+            } catch (SocketException e) {
+                logger.info("Method com.github.a_oleg.service.parseURL - invalid url parsing: " + url);
+                throw new ServerException("Invalid url parsing: " + url, e);
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -95,7 +100,7 @@ public class URLService {
     }
 
     /**Метод, формирующий список "Слово-количество повторений" из текстов*/
-    public HashMap<String, Integer> createNotLematizedWordsMap(ArrayList<String> texts) {
+    private HashMap<String, Integer> createNotLematizedWordsMap(ArrayList<String> texts) {
         HashMap<String, Integer> notLematizedMap = new HashMap<>();
         if(texts == null) return notLematizedMap;
         for(String text : texts) {
@@ -113,7 +118,7 @@ public class URLService {
     }
 
     /**Метод, определяющий принадлежит ли слово кирилице*/
-    public boolean checkCyrillic(String word){
+    private boolean checkCyrillic(String word){
         if(word == null || word.isEmpty()) {
             return false;
         }
@@ -128,7 +133,7 @@ public class URLService {
     }
 
     /**Метод, возвращающий массив кирилических лематизированных слов WordDto*/
-    public ArrayList<WordDto> checkingLematizedForm(HashMap<String, Integer> notLematizedWordsMap) {
+    private ArrayList<WordDto> checkingLematizedForm(HashMap<String, Integer> notLematizedWordsMap) {
         ArrayList<WordDto> lematizedWords = new ArrayList<>();
         Word word = null;
         WordDto wordDto;
@@ -178,7 +183,7 @@ public class URLService {
     }
 
     /**Метод, возвращающий массив не кирилических слов WordDto*/
-    public ArrayList<WordDto> creatingListOfNonCyrillicWords(HashMap<String, Integer> nonCyrillicWordsMap) {
+    private ArrayList<WordDto> creatingListOfNonCyrillicWords(HashMap<String, Integer> nonCyrillicWordsMap) {
         ArrayList<WordDto> nonCyrillicWords = new ArrayList<>();
         for(Map.Entry<String, Integer> entry: nonCyrillicWordsMap.entrySet()) {
             nonCyrillicWords.add(new WordDto(0, entry.getKey(), 0, 0, entry.getValue(), false));

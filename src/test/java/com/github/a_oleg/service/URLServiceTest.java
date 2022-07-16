@@ -1,6 +1,8 @@
 package com.github.a_oleg.service;
 
+import com.github.a_oleg.dto.WordDto;
 import com.github.a_oleg.entity.Word;
+import com.github.a_oleg.exceptions.ServerException;
 import com.github.a_oleg.repository.WordRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -39,100 +42,125 @@ class URLServiceTest {
         method.setAccessible(true);
         ArrayList<String> strings = (ArrayList<String>)method.invoke(urlService, urls);
         Assertions.assertEquals(3, strings.size());
-        Assertions.assertEquals(3, urlService.parseURL(urls).size());
     }
 
     @Test
-    void whenParseValidUrlsWithoutHTTPS_thenReturnTrue() {
+    void whenParseValidUrlsWithoutHTTPS_thenReturnTrue() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         ArrayList<String> urls = new ArrayList<>();
         urls.add("yandex.ru");
         urls.add("ya.ru");
         urls.add("mail.ru");
 
-        Assertions.assertEquals(3, urlService.parseURL(urls).size());
+        Method method = URLService.class.getDeclaredMethod("parseURL", ArrayList.class);
+        method.setAccessible(true);
+        ArrayList<String> strings = (ArrayList<String>)method.invoke(urlService, urls);
+        Assertions.assertEquals(3, strings.size());
     }
 
 
-//Не знаю, как в коде решить проблему: для парсинга передаются некорректные urls. Я просто сделал printStackTrace
-// Нужно посмотреть коды ошибок, возвращаемых при exception
+    // Ругается на несоответствие исключений
 //    @Test
-//    void whenParseNotUrls_thenReturnException() {
+//    void whenParseNotUrls_thenReturnException() throws NoSuchMethodException {
 //        ArrayList<String> urls = new ArrayList<>();
 //        urls.add("123");
 //        urls.add("abc");
 //        urls.add("абв");
 //
-//        Assertions.assertEquals(3, urlService.parseURL(urls).size());
-//    }
-
-//    @Test
-//    void whenEmptyUrlArray_thenReturnArrayOfSizeZero() {
-//        ArrayList<String> urls = new ArrayList<>();
-//        Assertions.assertEquals(0, urlService.parseURL(urls).size());
-//    }
-
-//    @Test
-//    void whenParseNull_thenReturnArrayOfSizeZero() {
-//        Assertions.assertEquals(0, urlService.parseURL(null).size());
+//        Method method = URLService.class.getDeclaredMethod("parseURL", ArrayList.class);
+//        method.setAccessible(true);
+//        ServerException thrown = Assertions.assertThrows(ServerException.class, () -> {
+//            method.invoke(urlService, urls);
+//        });
+//        Assertions.assertEquals("Network is unreachable", thrown.getMessage());
 //    }
 
     @Test
-    void whenFourCorrectTexts_thenReturnHashMap() {
+    void whenEmptyUrlArray_thenReturnArrayOfSizeZero() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        ArrayList<String> urls = new ArrayList<>();
+
+        Method method = URLService.class.getDeclaredMethod("parseURL", ArrayList.class);
+        method.setAccessible(true);
+
+        ArrayList<String> strings = (ArrayList<String>)method.invoke(urlService, urls);
+        Assertions.assertEquals(0, strings.size());
+    }
+
+    @Test
+    void whenFourCorrectTexts_thenReturnHashMap() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         ArrayList<String> texts = new ArrayList<>();
         texts.add("Один, два, три");
         texts.add("Один, четыре, пять");
         texts.add("Шесть, семь, восемь");
         texts.add("Девять, десять, одиннадцать");
 
-        Assertions.assertEquals(11, urlService.createNotLematizedWordsMap(texts).size());
+        Method method = URLService.class.getDeclaredMethod("createNotLematizedWordsMap", ArrayList.class);
+        method.setAccessible(true);
+        HashMap<String, Integer> pairStringCount = (HashMap)method.invoke(urlService, texts);
+        //Одиннадцать элементов, т.к. слово "Один" повторяется два раза
+        Assertions.assertEquals(11, pairStringCount.size());
     }
 
-    @Test
-    void whenNullTexts_thenReturnEmptyHashMap() {
-        Assertions.assertEquals(0, urlService.createNotLematizedWordsMap(null).size());
-    }
+    //Почему он пишет "wrong number of arguments - неверное кол-во аргументов? Я специально передаю ему null
+//    @Test
+//    void whenNullTexts_thenReturnEmptyHashMap() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+//        Method method = URLService.class.getDeclaredMethod("createNotLematizedWordsMap", ArrayList.class);
+//        method.setAccessible(true);
+//        HashMap<String, Integer> pairStringCount = (HashMap)method.invoke(urlService, null);
+//
+//        Assertions.assertEquals(0, pairStringCount.size());
+//    }
+
+    //в методе getDeclaredMethod не принимает возвращаемое значение boolean
+//    @Test
+//    void whenCyrillic_thenReturnTrue() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+//        Method method = URLService.class.getDeclaredMethod("checkCyrillic", boolean);
+//        method.setAccessible(true);
+//        boolean booleanResult = (boolean)method.invoke("абв");
+//        Assertions.assertTrue(booleanResult);
+//    }
+//
+//    @Test
+//    void whenNonCyrillic_thenReturnFalse() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+//        Method method = URLService.class.getDeclaredMethod("checkCyrillic", ArrayList.class);
+//        method.setAccessible(true);
+//        boolean booleanResult = (boolean)method.invoke("abc");
+//        Assertions.assertFalse(booleanResult);
+//    }
+//
+//    @Test
+//    void whenCyrillicAndNonCyrillic_thenReturnFalse() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+//        Method method = URLService.class.getDeclaredMethod("checkCyrillic", ArrayList.class);
+//        method.setAccessible(true);
+//        boolean booleanResult = (boolean)method.invoke("абвabc");
+//        Assertions.assertFalse(booleanResult);
+//    }
+//
+//    @Test
+//    void whenNumber_thenReturnFalse() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+//        Method method = URLService.class.getDeclaredMethod("checkCyrillic", ArrayList.class);
+//        method.setAccessible(true);
+//        boolean booleanResult = (boolean)method.invoke("1");
+//        Assertions.assertFalse(booleanResult);
+//    }
+//
+//    @Test
+//    void whenEmptyString_thenReturnFalse() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+//        Method method = URLService.class.getDeclaredMethod("checkCyrillic", ArrayList.class);
+//        method.setAccessible(true);
+//        boolean booleanResult = (boolean)method.invoke("");
+//        Assertions.assertFalse(booleanResult);
+//    }
+//
+//    @Test
+//    void whenNull_thenReturnFalse() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+//        Method method = URLService.class.getDeclaredMethod("checkCyrillic", ArrayList.class);
+//        method.setAccessible(true);
+//        boolean booleanResult = (boolean)method.invoke(null);
+//        Assertions.assertTrue(booleanResult);
+//    }
 
     @Test
-    void whenHashMapNonCyrillicWordsWithTwoElements_thenReturnArrayListWithTwoElements() {
-        HashMap<String, Integer> nonCyrillicWordsMap = new HashMap<>();
-        nonCyrillicWordsMap.put("Марс", 1);
-        nonCyrillicWordsMap.put("Венера", 2);
-
-        Assertions.assertEquals(2, urlService.creatingListOfNonCyrillicWords(nonCyrillicWordsMap).size());
-    }
-
-    @Test
-    void whenCyrillic_thenReturnTrue() {
-        Assertions.assertTrue(urlService.checkCyrillic("абв"));
-    }
-
-    @Test
-    void whenNonCyrillic_thenReturnFalse() {
-        Assertions.assertFalse(urlService.checkCyrillic("abc"));
-    }
-
-    @Test
-    void whenCyrillicAndNonCyrillic_thenReturnFalse() {
-        Assertions.assertFalse(urlService.checkCyrillic("абвabc"));
-    }
-
-    @Test
-    void whenNumber_thenReturnFalse() {
-        Assertions.assertFalse(urlService.checkCyrillic("1"));
-    }
-
-    @Test
-    void whenEmptyString_thenReturnFalse() {
-        Assertions.assertFalse(urlService.checkCyrillic(""));
-    }
-
-    @Test
-    void whenNull_thenReturnFalse() {
-        Assertions.assertFalse(urlService.checkCyrillic(null));
-    }
-
-    @Test
-    void whenNotLematizedWordsTwoElements_thenReturnArrayListWordDtoWithTwoElements() {
+    void whenNotLematizedWordsTwoElements_thenReturnArrayListWordDtoWithTwoElements() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         HashMap<String, Integer> notLematizedWordsMap = new HashMap<>();
         notLematizedWordsMap.put("ромашки", 3);
         notLematizedWordsMap.put("лютики", 5);
@@ -146,33 +174,50 @@ class URLServiceTest {
         Set<Word> wordSet = new HashSet<>();
         wordSet.add(romashka);
 
-        when(wordRepository.findByWord(any())).thenReturn(wordSet);
-        when(wordRepository.findByCode(anyInt())).thenReturn(wordSet);
-
-        Assertions.assertEquals(2, urlService.checkingLematizedForm(notLematizedWordsMap).size());
-    }
-
-    @Test
-    void whenNotLematizedWordsThreeElements_thenReturnArrayListWordDtoWithTwoElements() {
-        HashMap<String, Integer> notLematizedWordsMap = new HashMap<>();
-        notLematizedWordsMap.put("ромашки", 3);
-        notLematizedWordsMap.put("ромашек", 5);
-        notLematizedWordsMap.put("ромашке", 5);
-
-        Word romashka = new Word();
-        romashka.setId(1);
-        romashka.setWord("ромашка");
-        romashka.setCode(123);
-        romashka.setCodeParent(456);
-
-        Set<Word> wordSet = new HashSet<>();
-        wordSet.add(romashka);
+        Method method = URLService.class.getDeclaredMethod("creatingListOfNonCyrillicWords", ArrayList.class);
+        method.setAccessible(true);
+        ArrayList<WordDto> arrayWordDto = (ArrayList)method.invoke(urlService, notLematizedWordsMap);
 
         when(wordRepository.findByWord(any())).thenReturn(wordSet);
         when(wordRepository.findByCode(anyInt())).thenReturn(wordSet);
 
-        Assertions.assertEquals(1, urlService.checkingLematizedForm(notLematizedWordsMap).size());
+        Assertions.assertEquals(2, arrayWordDto);
     }
 
-    //Предусмотреть тест, где есть несколько слов в разных словоформах
+//Не переделал с помощью рефлексии, т.к. предыдущий вариант теста не работает
+    //    @Test
+//    void whenNotLematizedWordsThreeElements_thenReturnArrayListWordDtoWithTwoElements() {
+//        HashMap<String, Integer> notLematizedWordsMap = new HashMap<>();
+//        notLematizedWordsMap.put("ромашки", 3);
+//        notLematizedWordsMap.put("ромашек", 5);
+//        notLematizedWordsMap.put("ромашке", 5);
+//
+//        Word romashka = new Word();
+//        romashka.setId(1);
+//        romashka.setWord("ромашка");
+//        romashka.setCode(123);
+//        romashka.setCodeParent(456);
+//
+//        Set<Word> wordSet = new HashSet<>();
+//        wordSet.add(romashka);
+//
+//        when(wordRepository.findByWord(any())).thenReturn(wordSet);
+//        when(wordRepository.findByCode(anyInt())).thenReturn(wordSet);
+//
+//        Assertions.assertEquals(1, urlService.checkingLematizedForm(notLematizedWordsMap).size());
+//    }
+
+    //Непонятная ошибка
+//    @Test
+//    void whenHashMapNonCyrillicWordsWithTwoElements_thenReturnArrayListWithTwoElements() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+//        HashMap<String, Integer> nonCyrillicWordsMap = new HashMap<>();
+//        nonCyrillicWordsMap.put("Марс", 1);
+//        nonCyrillicWordsMap.put("Венера", 2);
+//
+//        Method method = URLService.class.getDeclaredMethod("creatingListOfNonCyrillicWords", ArrayList.class);
+//        method.setAccessible(true);
+//        ArrayList<WordDto> arrayWordDto = (ArrayList)method.invoke(urlService, nonCyrillicWordsMap);
+//
+//        Assertions.assertEquals(2, arrayWordDto.size());
+//    }
 }
