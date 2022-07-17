@@ -82,16 +82,19 @@ public class URLService {
             try {
                 htmlDocument = Jsoup.connect(url).get();
             } catch (SocketException e) {
-                logger.info("Method com.github.a_oleg.service.parseURL - invalid url parsing: " + url);
+                logger.error("Method com.github.a_oleg.service.parseURL - SocketException: invalid url parsing: " + url);
                 throw new ServerException("Invalid url parsing: " + url, e);
             } catch (IllegalArgumentException e) {
-                e.printStackTrace();
+                logger.error("Method com.github.a_oleg.service.parseURL - IllegalArgumentException: invalid argument for parsing: " + url);
+                throw new ServerException("Invalid url parsing: " + url, e);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Method com.github.a_oleg.service.parseURL - IOException for url: " + url);
+                throw new ServerException("Invalid url parsing: " + url, e);
             }
             try {
                 bodyTagText = htmlDocument.body().text();
             } catch (NullPointerException e) {
+                logger.error("Method com.github.a_oleg.service.parseURL - NullPointerException: the body tag was not found for the: " + url);
                 bodyTagText = null;
             }
             urlsAndTexts.add(bodyTagText);
@@ -142,7 +145,6 @@ public class URLService {
             System.out.println("Анализ слова: " + entry.getKey());
             //Коллекция Set необходима на случай, если в БД будет найдено больше одного значения (особенности БД)
             Set<Word> wordSet = wordRepository.findByWord(entry.getKey());
-            //System.out.println("Для слова " + entry.getKey() + " найдено " + wordSet.size() + " элементов в БД");
             for (Word w : wordSet) {
                 word = w;
                 break;

@@ -27,7 +27,7 @@ public class URLController {
     @RequestMapping(value = "/downloadResult", produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
     public ArrayList<WordDto> parseURL(@RequestParam(name = "URL", required = true) String url) throws ServerException {
-        logger.info("First log");
+        logger.info("Successful launch of the application");
         System.out.println(url);
         if (url == "") {
             return null;
@@ -39,6 +39,7 @@ public class URLController {
             }
             ArrayList<WordDto> LematizedCyrillicAndNonLematizedNonCyrillicWords
                     = urlService.getLematizedWordsByUrls(urlsForCountLematizedWords);
+            logger.info("Successful completion of the application and data transfer to the front-end");
             return LematizedCyrillicAndNonLematizedNonCyrillicWords;
         }
     }
