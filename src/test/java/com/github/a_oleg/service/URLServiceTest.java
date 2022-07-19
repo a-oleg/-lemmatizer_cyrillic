@@ -2,7 +2,6 @@ package com.github.a_oleg.service;
 
 import com.github.a_oleg.dto.WordDto;
 import com.github.a_oleg.entity.Word;
-import com.github.a_oleg.exceptions.ServerException;
 import com.github.a_oleg.repository.WordRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -183,28 +182,29 @@ class URLServiceTest {
         Assertions.assertEquals(2, arrayWordDto.size());
     }
 
-//Не переделал с помощью рефлексии, т.к. предыдущий вариант теста не работает - теперь предыдущий работает
-//        @Test
-//    void whenNotLematizedWordsThreeElements_thenReturnArrayListWordDtoWithTwoElements() {
-//        HashMap<String, Integer> notLematizedWordsMap = new HashMap<>();
-//        notLematizedWordsMap.put("ромашки", 3);
-//        notLematizedWordsMap.put("ромашек", 5);
-//        notLematizedWordsMap.put("ромашке", 5);
-//
-//        Word romashka = new Word();
-//        romashka.setId(1);
-//        romashka.setWord("ромашка");
-//        romashka.setCode(123);
-//        romashka.setCodeParent(456);
-//
-//        Set<Word> wordSet = new HashSet<>();
-//        wordSet.add(romashka);
-//
-//        when(wordRepository.findByWord(any())).thenReturn(wordSet);
-//        when(wordRepository.findByCode(anyInt())).thenReturn(wordSet);
-//
-//        Assertions.assertEquals(1, urlService.checkingLematizedForm(notLematizedWordsMap).size());
-//    }
+        @Test
+    void whenNotLematizedWordsThreeElements_thenReturnArrayListWordDtoWithTwoElements() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        HashMap<String, Integer> notLematizedWordsMap = new HashMap<>();
+        notLematizedWordsMap.put("ромашка", 3);
+
+        Word romashka = new Word();
+        romashka.setId(1);
+        romashka.setWord("ромашки");
+        romashka.setCode(123);
+        romashka.setCodeParent(456);
+
+        Set<Word> wordSet = new HashSet<>();
+        wordSet.add(romashka);
+
+        Method method = URLService.class.getDeclaredMethod("creatingListOfNonCyrillicWords", HashMap.class);
+        method.setAccessible(true);
+
+        //when(wordRepository.findByWord(any())).thenReturn(wordSet);
+        //when(wordRepository.findByCode(anyInt())).thenReturn(wordSet);
+
+        ArrayList<WordDto> arrayWordDto = (ArrayList)method.invoke(urlService, notLematizedWordsMap);
+        Assertions.assertEquals(1, arrayWordDto.size());
+    }
 
     @Test
     void whenHashMapNonCyrillicWordsWithTwoElements_thenReturnArrayListWithTwoElements() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
