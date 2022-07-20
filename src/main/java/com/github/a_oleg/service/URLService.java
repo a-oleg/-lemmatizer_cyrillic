@@ -82,7 +82,7 @@ public class URLService {
             try {
                 htmlDocument = Jsoup.connect(url).get();
             } catch (SocketException e) {
-                logger.error("Method com.github.a_oleg.service.parseURL - SocketException: invalid url parsing: " + url);
+                logger.error("Method com.github.a_oleg.service.parseURL - SocketException: invalid url parsing: " + url, e.getStackTrace());
                 throw new ServerException("Invalid url parsing: " + url, e);
             } catch (IllegalArgumentException e) {
                 logger.error("Method com.github.a_oleg.service.parseURL - IllegalArgumentException: invalid argument for parsing: " + url);

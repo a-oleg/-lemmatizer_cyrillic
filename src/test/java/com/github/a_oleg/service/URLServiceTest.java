@@ -17,11 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class URLServiceTest {
     @Mock
@@ -174,8 +169,6 @@ class URLServiceTest {
 
         Method method = URLService.class.getDeclaredMethod("creatingListOfNonCyrillicWords", HashMap.class);
         method.setAccessible(true);
-        //when(wordRepository.findByWord(any())).thenReturn(wordSet);
-        //when(wordRepository.findByCode(anyInt())).thenReturn(wordSet);
 
         ArrayList<WordDto> arrayWordDto = (ArrayList)method.invoke(urlService, notLematizedWordsMap);
 
@@ -198,9 +191,6 @@ class URLServiceTest {
 
         Method method = URLService.class.getDeclaredMethod("creatingListOfNonCyrillicWords", HashMap.class);
         method.setAccessible(true);
-
-        //when(wordRepository.findByWord(any())).thenReturn(wordSet);
-        //when(wordRepository.findByCode(anyInt())).thenReturn(wordSet);
 
         ArrayList<WordDto> arrayWordDto = (ArrayList)method.invoke(urlService, notLematizedWordsMap);
         Assertions.assertEquals(1, arrayWordDto.size());
