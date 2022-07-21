@@ -85,16 +85,16 @@ public class URLService {
                 logger.error("Method com.github.a_oleg.service.parseURL - SocketException: invalid url parsing: " + url, e.getStackTrace());
                 throw new ServerException("Invalid url parsing: " + url, e);
             } catch (IllegalArgumentException e) {
-                logger.error("Method com.github.a_oleg.service.parseURL - IllegalArgumentException: invalid argument for parsing: " + url);
+                logger.error("Method com.github.a_oleg.service.parseURL - IllegalArgumentException: invalid argument for parsing: " + url, e.getStackTrace());
                 throw new ServerException("Invalid url parsing: " + url, e);
             } catch (IOException e) {
-                logger.error("Method com.github.a_oleg.service.parseURL - IOException for url: " + url);
+                logger.error("Method com.github.a_oleg.service.parseURL - IOException for url: " + url, e.getStackTrace());
                 throw new ServerException("Invalid url parsing: " + url, e);
             }
             try {
                 bodyTagText = htmlDocument.body().text();
             } catch (NullPointerException e) {
-                logger.error("Method com.github.a_oleg.service.parseURL - NullPointerException: the body tag was not found for the: " + url);
+                logger.error("Method com.github.a_oleg.service.parseURL - NullPointerException: the body tag was not found for the: " + url, e.getStackTrace());
                 bodyTagText = null;
             }
             urlsAndTexts.add(bodyTagText);
