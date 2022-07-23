@@ -1,6 +1,7 @@
 package com.github.a_oleg.controllers;
 
 import com.github.a_oleg.dto.WordDto;
+import com.github.a_oleg.exceptions.ClientException;
 import com.github.a_oleg.exceptions.ServerException;
 import com.github.a_oleg.service.URLService;
 import org.slf4j.Logger;
@@ -26,11 +27,12 @@ public class URLController {
 
     @RequestMapping(value = "/downloadResult", produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
-    public ArrayList<WordDto> parseURL(@RequestParam(name = "URL", required = true) String url) throws ServerException {
+    public ArrayList<WordDto> parseURL(@RequestParam(name = "URL", required = true) String url) throws ServerException, ClientException {
         logger.info("Successful launch of the application");
         System.out.println(url);
         if (url == "") {
-            return null;
+            logger.error("The front-end passed an empty string for parsing. There are no urls for parsing");
+            throw new ClientException("There are no urls for parsing");
         } else {
             String[] arrayURL = url.split("\r\n");
             ArrayList<String> urlsForCountLematizedWords = new ArrayList<>();
